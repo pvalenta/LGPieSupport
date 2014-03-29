@@ -1,49 +1,47 @@
 package hk.valenta.lgpiesupport;
 
-import android.view.Display;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.content.res.XResources;
+import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_InitPackageResources.InitPackageResourcesParam;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
-public class PieSupport implements IXposedHookLoadPackage, IXposedHookZygoteInit {
+public class PieSupport implements IXposedHookInitPackageResources, IXposedHookLoadPackage, IXposedHookZygoteInit {
+
+	@Override
+	public void handleInitPackageResources(InitPackageResourcesParam resparam) throws Throwable {
+		// disable navigation bar
+		XResources.setSystemWideReplacement("android", "bool", "config_showNavigationBar", false);
+	}
 
 	@Override
 	public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
 		// disable navigation ring
 		if (lpparam.packageName.equals("com.android.systemui")) {
 			try {
-				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "getNavigationBarLayoutParams", new XC_MethodHook() {
+				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "enableGlobalAccess", boolean.class, new XC_MethodHook() {
 					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						// get layout params
-						WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams)param.getResult();
-						layoutParams.height = 0;
+					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+						// set it to false
+						param.args[0] = false;
 					}
 				});
-				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "getSearchLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodHook() {
+				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "shouldDisableNavbarGestures", new XC_MethodReplacement() {
 					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						// get layout params
-						WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams)param.getResult();
-						layoutParams.height = 0;
-					}
-				});
-				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "getGlobalAccessWindowParams", new XC_MethodHook() {
-					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						// get layout params
-						WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams)param.getResult();
-						layoutParams.height = 0;
+					protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+						// return true
+						param.setResult(true);
+						return true;
 					}
 				});
 			} catch (Exception ex) {
 				// report it
-				XposedBridge.log(String.format("PieSupport - failed set layout params with error: %s", ex.getMessage()));
+				XposedBridge.log(String.format("PieSupport - failed disable global access with touches with error: %s", ex.getMessage()));
 			}
 		}
 	}
@@ -56,22 +54,9 @@ public class PieSupport implements IXposedHookLoadPackage, IXposedHookZygoteInit
 				// get full height
 				int fullHeight = (Integer)param.args[1];
 				
-				// set 1px less only
+				// set 1px less only to solve weather widget bug and keyboard bug
 				param.setResult(fullHeight - 1);
 			}			
-		});
-		XposedHelpers.findAndHookMethod("com.android.internal.policy.impl.PhoneWindowManager", null, "setInitialDisplaySize", Display.class, int.class, int.class, int.class, new XC_MethodHook() {
-			@Override
-			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-				// get array
-				int[] mNavigationBarHeightForRotation = (int[])XposedHelpers.getObjectField(param.thisObject, "mNavigationBarHeightForRotation");
-				
-				// set all to 0
-				mNavigationBarHeightForRotation[0] = 0;
-				mNavigationBarHeightForRotation[1] = 0;
-				mNavigationBarHeightForRotation[2] = 0;
-				mNavigationBarHeightForRotation[3] = 0;
-			}
 		});
 	}
 }
