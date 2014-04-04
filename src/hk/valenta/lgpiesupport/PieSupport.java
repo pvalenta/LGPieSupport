@@ -48,6 +48,18 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
+		XposedHelpers.findAndHookMethod("com.android.internal.policy.impl.PhoneWindowManager", null, "getNonDecorDisplayWidth", int.class, int.class, int.class, new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+				// get full height
+				int fullWidth = (Integer)param.args[0];
+				
+				// set 1px less only to solve weather widget bug and keyboard bug
+				if (fullWidth == 1920) {
+					param.setResult(fullWidth - 1);
+				}
+			}			
+		});
 		XposedHelpers.findAndHookMethod("com.android.internal.policy.impl.PhoneWindowManager", null, "getNonDecorDisplayHeight", int.class, int.class, int.class, new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -55,7 +67,9 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				int fullHeight = (Integer)param.args[1];
 				
 				// set 1px less only to solve weather widget bug and keyboard bug
-				param.setResult(fullHeight - 1);
+				if (fullHeight == 1920) {
+					param.setResult(fullHeight - 1);
+				}
 			}			
 		});
 	}
