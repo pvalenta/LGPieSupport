@@ -1,0 +1,159 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <ImageView
+        android:id="@+id/main_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="20dip"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/main_logo"
+        android:layout_centerInParent="true"
+        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
+        android:text="@string/app_name"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/main_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/main_logo"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingEnd="15dp"
+        android:paddingRight="15dp"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/top_gap_view"
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:layout_below="@id/main_logo"
+        android:background="#2486BF"
+        android:layout_marginTop="10dip" />
+
+    <RelativeLayout
+        android:id="@+id/hide_navigation_bar_group"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_gap_view"
+        android:paddingTop="10dip" >
+        
+        <CheckBox
+            android:id="@+id/main_hide_navbar"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/main_hide_navbar"
+            android:layout_toStartOf="@id/main_hide_navbar"
+            android:gravity="center_vertical"
+            android:text="@string/hide_navbar" />
+        
+        <TextView
+            android:layout_below="@id/main_hide_navbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Description"
+            android:text="@string/hide_navbar_description" />                
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/disable_navigation_ring_group"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hide_navigation_bar_group"
+        android:paddingTop="10dip" >
+        
+        <CheckBox
+            android:id="@+id/main_disable_navring"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/main_disable_navring"
+            android:layout_toStartOf="@id/main_disable_navring"
+            android:gravity="center_vertical"
+            android:text="@string/disable_ring" />
+        
+        <TextView
+            android:layout_below="@id/main_disable_navring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Description"
+            android:text="@string/disable_ring_description" />                
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/disable_navigation_ring_group"
+        android:paddingTop="30dip" >
+
+        <TextView
+            android:id="@+id/main_reduce_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Heading"
+            android:text="@string/reduce_tweak" />
+        
+        <CheckBox
+            android:id="@+id/main_reduce_width"
+            android:layout_below="@id/main_reduce_heading"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@id/main_reduce_width"
+            android:layout_toLeftOf="@id/main_reduce_width"
+            android:layout_toStartOf="@id/main_reduce_width"
+            android:gravity="center_vertical"
+            android:text="@string/reduce_width" />
+
+        <CheckBox
+            android:id="@+id/main_reduce_height"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/main_reduce_width" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@id/main_reduce_height"
+            android:layout_toLeftOf="@id/main_reduce_height"
+            android:layout_toStartOf="@id/main_reduce_height"
+            android:gravity="center_vertical"
+            android:text="@string/reduce_height" />
+        
+        <TextView
+            android:layout_below="@id/main_reduce_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Description"
+            android:text="@string/reduce_description" />        
+    </RelativeLayout>
+
+</RelativeLayout>

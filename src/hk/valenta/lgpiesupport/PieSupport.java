@@ -6,6 +6,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources.InitPackageResourcesParam;
@@ -15,8 +16,13 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 
 	@Override
 	public void handleInitPackageResources(InitPackageResourcesParam resparam) throws Throwable {
-		// disable navigation bar
-		XResources.setSystemWideReplacement("android", "bool", "config_showNavigationBar", false);
+		// get config
+		XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+		
+		if (pref.getBoolean("HideNavBar", true)) {
+			// disable navigation bar
+			XResources.setSystemWideReplacement("android", "bool", "config_showNavigationBar", false);
+		}
 	}
 
 	@Override
@@ -27,16 +33,31 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "enableGlobalAccess", boolean.class, new XC_MethodHook() {
 					@Override
 					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-						// set it to false
-						param.args[0] = false;
+						// get config
+						XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+						
+						if (pref.getBoolean("DisableNavRing", true)) {
+							// set it to false
+							param.args[0] = false;
+						}
 					}
 				});
 				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "shouldDisableNavbarGestures", new XC_MethodReplacement() {
 					@Override
 					protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-						// return true
-						param.setResult(true);
-						return true;
+						// get config
+						XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+						
+						if (pref.getBoolean("DisableNavRing", true)) {
+							// return true
+							param.setResult(true);
+							return true;
+						} else {
+							// return false
+							Object result = XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+							param.setResult(result);
+							return result;
+						}
 					}
 				});
 			} catch (Exception ex) {
@@ -54,8 +75,11 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				// get full height
 				int fullWidth = (Integer)param.args[0];
 				
+				// get config
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+				
 				// set 1px less only to solve weather widget bug and keyboard bug
-				if (fullWidth == 1920) {
+				if (pref.getBoolean("ReduceWidth", true) && (fullWidth == 1920 || fullWidth == 2560)) {
 					param.setResult(fullWidth - 1);
 				}
 			}			
@@ -66,8 +90,11 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				// get full height
 				int fullHeight = (Integer)param.args[1];
 				
+				// get config
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+				
 				// set 1px less only to solve weather widget bug and keyboard bug
-				if (fullHeight == 1920) {
+				if (pref.getBoolean("ReduceHeight", true) && (fullHeight == 1920 || fullHeight == 2560)) {
 					param.setResult(fullHeight - 1);
 				}
 			}			

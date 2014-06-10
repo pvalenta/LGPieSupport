@@ -10,10 +10,66 @@ package hk.valenta.lgpiesupport;
 public final class R {
     public static final class attr {
     }
+    public static final class dimen {
+        /**  Default screen margins, per the Android Design guidelines. 
+         */
+        public static final int activity_horizontal_margin=0x7f040000;
+        public static final int activity_vertical_margin=0x7f040001;
+        /**  For resources 
+         */
+        public static final int app_icon_size=0x7f040002;
+    }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
     }
+    public static final class id {
+        public static final int disable_navigation_ring_group=0x7f070005;
+        public static final int hide_navigation_bar_group=0x7f070003;
+        public static final int main_disable_navring=0x7f070006;
+        public static final int main_hide_navbar=0x7f070004;
+        public static final int main_logo=0x7f070000;
+        public static final int main_reduce_heading=0x7f070007;
+        public static final int main_reduce_height=0x7f070009;
+        public static final int main_reduce_width=0x7f070008;
+        public static final int main_version=0x7f070001;
+        public static final int top_gap_view=0x7f070002;
+    }
+    public static final class layout {
+        public static final int activity_main=0x7f030000;
+    }
     public static final class string {
-        public static final int app_name=0x7f030000;
+        public static final int app_name=0x7f050000;
+        public static final int disable_ring=0x7f050003;
+        public static final int disable_ring_description=0x7f050004;
+        public static final int hide_navbar=0x7f050001;
+        public static final int hide_navbar_description=0x7f050002;
+        public static final int reduce_description=0x7f050008;
+        public static final int reduce_height=0x7f050007;
+        public static final int reduce_tweak=0x7f050005;
+        public static final int reduce_width=0x7f050006;
+    }
+    public static final class style {
+        /** 
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    
+         */
+        public static final int AppBaseTheme=0x7f060000;
+        /**  Application theme. 
+ All customizations that are NOT specific to a particular API-level can go here. 
+         */
+        public static final int AppTheme=0x7f060001;
+        /**  Checkbox 
+         */
+        public static final int Checkbox=0x7f060002;
+        /**  Description 
+         */
+        public static final int Description=0x7f060005;
+        /**  Heading 
+         */
+        public static final int Heading=0x7f060004;
+        /**  LabelTextView 
+         */
+        public static final int LabelTextView=0x7f060003;
     }
 }

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">LG Pie Support</string>
+    <string name="hide_navbar">Hide Navigation Bar</string>
+    <string name="hide_navbar_description">This hook will hide navigation bar. You can uncheck it if you are using another mod for it. Restart required to apply change!</string>
+    <string name="disable_ring">Disable Navigation Ring</string>
+    <string name="disable_ring_description">This hook will disable navigation ring when you slide from bottom of screen. Restart required to apply change!</string>
+    <string name="reduce_tweak">Fix Weather Widget &amp; Keyboard crash</string>
+    <string name="reduce_width">Reduce width for portrait</string>
+    <string name="reduce_height">Reduce height for landscape</string>
+    <string name="reduce_description">This hook will reduce screen width &amp; height by 1px pretending thin navigation bar.</string>
 </resources>
