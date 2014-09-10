@@ -3,20 +3,17 @@ package hk.valenta.lgpiesupport;
 import android.content.res.XResources;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Space;
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodHook.MethodHookParam;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources.InitPackageResourcesParam;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class PieSupport implements IXposedHookInitPackageResources, IXposedHookLoadPackage, IXposedHookZygoteInit {
@@ -39,28 +36,6 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				XResources.setSystemWideReplacement("android", "dimen", "navigation_bar_width", 0);
 				if (resparam.packageName.equals("com.android.systemui")) {
 					resparam.res.setReplacement("com.android.systemui", "dimen", "navigation_bar_size", 0);
-					resparam.res.hookLayout("com.android.systemui", "layout", "navigation_bar", new XC_LayoutInflated() {
-						@Override
-						public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
-							// set 0 width and height
-							ViewGroup parent = (ViewGroup)liparam.view;
-							int childrenCount = parent.getChildCount();
-							for (int i=0; i<childrenCount; i++) {
-								// hide it
-								View child = parent.getChildAt(i);
-								child.setVisibility(View.GONE);
-								
-								// set width & height to 0
-								ViewGroup.LayoutParams params = child.getLayoutParams();
-								params.width = 0;
-								params.height = 0;
-							}
-							
-//							ViewGroup.LayoutParams params = liparam.view.getLayoutParams();
-//							params.width = 0;
-//							params.height = 0;
-						}
-					});
 					resparam.res.hookLayout("com.android.systemui", "layout", "status_bar_recent_panel", new XC_LayoutInflated() {
 						@Override
 						public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
@@ -106,30 +81,6 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 							Object result = XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
 							param.setResult(result);
 							return result;
-						}
-					}
-				});
-				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "getNavigationBarLayoutParams", new XC_MethodHook() {
-					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						// get config
-						XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
-						if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
-							WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams)param.getResult();
-							layoutParams.width = 0;
-							layoutParams.height = 0;
-							param.setResult(layoutParams);
-						}
-					}					
-				});
-				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.NavigationBarView", lpparam.classLoader, "reorient", new XC_MethodHook() {
-					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						// get config
-						XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
-						if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
-							View mCurrentView = (View)XposedHelpers.getObjectField(param.thisObject, "mCurrentView");
-							mCurrentView.setVisibility(View.GONE);
 						}
 					}
 				});

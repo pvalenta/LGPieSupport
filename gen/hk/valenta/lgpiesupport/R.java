@@ -26,19 +26,20 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int disable_navigation_ring_group=0x7f080008;
-        public static final int hide_navigation_bar_group=0x7f080003;
-        public static final int hide_navigation_bar_mode_group=0x7f080005;
-        public static final int main_disable_navring=0x7f080009;
-        public static final int main_hide_navbar=0x7f080004;
-        public static final int main_hide_navbar_0way=0x7f080007;
-        public static final int main_hide_navbar_disable=0x7f080006;
-        public static final int main_logo=0x7f080000;
-        public static final int main_reduce_heading=0x7f08000a;
-        public static final int main_reduce_height=0x7f08000c;
-        public static final int main_reduce_width=0x7f08000b;
-        public static final int main_version=0x7f080001;
-        public static final int top_gap_view=0x7f080002;
+        public static final int hide_navigation_bar_mode_group=0x7f080007;
+        public static final int main_bottom_area=0x7f080004;
+        public static final int main_disable_navring=0x7f08000a;
+        public static final int main_hide_navbar=0x7f080006;
+        public static final int main_hide_navbar_0way=0x7f080009;
+        public static final int main_hide_navbar_disable=0x7f080008;
+        public static final int main_logo=0x7f080001;
+        public static final int main_reduce_heading=0x7f08000b;
+        public static final int main_reduce_height=0x7f08000d;
+        public static final int main_reduce_width=0x7f08000c;
+        public static final int main_reset_button=0x7f080005;
+        public static final int main_top_area=0x7f080000;
+        public static final int main_version=0x7f080002;
+        public static final int top_gap_view=0x7f080003;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -55,6 +56,7 @@ public final class R {
         public static final int reduce_height=0x7f060007;
         public static final int reduce_tweak=0x7f060005;
         public static final int reduce_width=0x7f060006;
+        public static final int soft_reboot=0x7f06000b;
     }
     public static final class style {
         /** 

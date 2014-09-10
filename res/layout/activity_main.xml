@@ -1,7 +1,8 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -9,8 +10,10 @@
     tools:context=".MainActivity" >
 
     <RelativeLayout
+        android:id="@+id/main_top_area"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
 
         <ImageView
             android:id="@+id/main_logo"
@@ -52,149 +55,174 @@
             android:layout_below="@id/main_logo"
             android:layout_marginTop="10dip"
             android:background="#2486BF" />
+    </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/hide_navigation_bar_group"
-            android:layout_width="fill_parent"
+    <RelativeLayout
+        android:id="@+id/main_bottom_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true" >
+        
+        <Button android:id="@+id/main_reset_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/top_gap_view"
-            android:paddingTop="10dip" >
+            android:layout_centerHorizontal="true"
+            style="@android:style/Widget.Button"
+            android:text="@string/soft_reboot"/>
+        
+    </RelativeLayout>
 
-            <CheckBox
-                android:id="@+id/main_hide_navbar"
-                style="@style/Checkbox"
-                android:layout_alignParentEnd="true" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_top_area"
+        android:layout_above="@id/main_bottom_area"
+        android:paddingTop="10dip" >
 
-            <TextView
-                style="@style/LabelTextView"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@id/main_hide_navbar"
-                android:layout_toStartOf="@id/main_hide_navbar"
-                android:gravity="center_vertical"
-                android:text="@string/hide_navbar" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
             <RelativeLayout
-                android:id="@+id/hide_navigation_bar_mode_group"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/main_hide_navbar">
+                android:layout_height="wrap_content" >
 
-                <RadioButton
-                    android:id="@+id/main_hide_navbar_disable"
-                    style="@style/Radiobutton"
+                <CheckBox
+                    android:id="@+id/main_hide_navbar"
+                    style="@style/Checkbox"
                     android:layout_alignParentEnd="true" />
 
                 <TextView
                     style="@style/LabelTextView"
                     android:layout_alignParentStart="true"
-                    android:layout_alignTop="@id/main_hide_navbar_disable"
-                    android:layout_toLeftOf="@id/main_hide_navbar_disable"
-                    android:layout_toStartOf="@id/main_hide_navbar_disable"
+                    android:layout_toLeftOf="@id/main_hide_navbar"
+                    android:layout_toStartOf="@id/main_hide_navbar"
                     android:gravity="center_vertical"
-                    android:text="@string/hide_navbar_disable" />
+                    android:text="@string/hide_navbar" />
 
-                <RadioButton
-                    android:id="@+id/main_hide_navbar_0way"
-                    style="@style/Radiobutton"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@id/main_hide_navbar_disable" />
+                <RelativeLayout
+                    android:id="@+id/hide_navigation_bar_mode_group"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/main_hide_navbar" >
+
+                    <RadioButton
+                        android:id="@+id/main_hide_navbar_disable"
+                        style="@style/Radiobutton"
+                        android:layout_alignParentEnd="true" />
+
+                    <TextView
+                        style="@style/LabelTextView"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignTop="@id/main_hide_navbar_disable"
+                        android:layout_toLeftOf="@id/main_hide_navbar_disable"
+                        android:layout_toStartOf="@id/main_hide_navbar_disable"
+                        android:gravity="center_vertical"
+                        android:text="@string/hide_navbar_disable" />
+
+                    <RadioButton
+                        android:id="@+id/main_hide_navbar_0way"
+                        style="@style/Radiobutton"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/main_hide_navbar_disable" />
+
+                    <TextView
+                        style="@style/LabelTextView"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignTop="@id/main_hide_navbar_0way"
+                        android:layout_toLeftOf="@id/main_hide_navbar_disable"
+                        android:layout_toStartOf="@id/main_hide_navbar_disable"
+                        android:gravity="center_vertical"
+                        android:text="@string/hide_navbar_0way" />
+                </RelativeLayout>
+
+                <TextView
+                    style="@style/Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hide_navigation_bar_mode_group"
+                    android:text="@string/hide_navbar_description" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dip" >
+
+                <CheckBox
+                    android:id="@+id/main_disable_navring"
+                    style="@style/Checkbox"
+                    android:layout_alignParentEnd="true" />
 
                 <TextView
                     style="@style/LabelTextView"
                     android:layout_alignParentStart="true"
-                    android:layout_alignTop="@id/main_hide_navbar_0way"
-                    android:layout_toLeftOf="@id/main_hide_navbar_disable"
-                    android:layout_toStartOf="@id/main_hide_navbar_disable"
+                    android:layout_toLeftOf="@id/main_disable_navring"
+                    android:layout_toStartOf="@id/main_disable_navring"
                     android:gravity="center_vertical"
-                    android:text="@string/hide_navbar_0way" />
+                    android:text="@string/disable_ring" />
+
+                <TextView
+                    style="@style/Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/main_disable_navring"
+                    android:text="@string/disable_ring_description" />
             </RelativeLayout>
 
-            <TextView
-                style="@style/Description"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/hide_navigation_bar_mode_group"
-                android:text="@string/hide_navbar_description" />
-        </RelativeLayout>
+                android:paddingTop="30dip" >
 
-        <RelativeLayout
-            android:id="@+id/disable_navigation_ring_group"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/hide_navigation_bar_group"
-            android:paddingTop="10dip" >
+                <TextView
+                    android:id="@+id/main_reduce_heading"
+                    style="@style/Heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reduce_tweak" />
 
-            <CheckBox
-                android:id="@+id/main_disable_navring"
-                style="@style/Checkbox"
-                android:layout_alignParentEnd="true" />
+                <CheckBox
+                    android:id="@+id/main_reduce_width"
+                    style="@style/Checkbox"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/main_reduce_heading" />
 
-            <TextView
-                style="@style/LabelTextView"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@id/main_disable_navring"
-                android:layout_toStartOf="@id/main_disable_navring"
-                android:gravity="center_vertical"
-                android:text="@string/disable_ring" />
+                <TextView
+                    style="@style/LabelTextView"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/main_reduce_width"
+                    android:layout_toLeftOf="@id/main_reduce_width"
+                    android:layout_toStartOf="@id/main_reduce_width"
+                    android:gravity="center_vertical"
+                    android:text="@string/reduce_width" />
 
-            <TextView
-                style="@style/Description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/main_disable_navring"
-                android:text="@string/disable_ring_description" />
-        </RelativeLayout>
+                <CheckBox
+                    android:id="@+id/main_reduce_height"
+                    style="@style/Checkbox"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/main_reduce_width" />
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/disable_navigation_ring_group"
-            android:paddingTop="30dip" >
+                <TextView
+                    style="@style/LabelTextView"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/main_reduce_height"
+                    android:layout_toLeftOf="@id/main_reduce_height"
+                    android:layout_toStartOf="@id/main_reduce_height"
+                    android:gravity="center_vertical"
+                    android:text="@string/reduce_height" />
 
-            <TextView
-                android:id="@+id/main_reduce_heading"
-                style="@style/Heading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/reduce_tweak" />
+                <TextView
+                    style="@style/Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/main_reduce_height"
+                    android:text="@string/reduce_description" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 
-            <CheckBox
-                android:id="@+id/main_reduce_width"
-                style="@style/Checkbox"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/main_reduce_heading" />
-
-            <TextView
-                style="@style/LabelTextView"
-                android:layout_alignParentStart="true"
-                android:layout_alignTop="@id/main_reduce_width"
-                android:layout_toLeftOf="@id/main_reduce_width"
-                android:layout_toStartOf="@id/main_reduce_width"
-                android:gravity="center_vertical"
-                android:text="@string/reduce_width" />
-
-            <CheckBox
-                android:id="@+id/main_reduce_height"
-                style="@style/Checkbox"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/main_reduce_width" />
-
-            <TextView
-                style="@style/LabelTextView"
-                android:layout_alignParentStart="true"
-                android:layout_alignTop="@id/main_reduce_height"
-                android:layout_toLeftOf="@id/main_reduce_height"
-                android:layout_toStartOf="@id/main_reduce_height"
-                android:gravity="center_vertical"
-                android:text="@string/reduce_height" />
-
-            <TextView
-                style="@style/Description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/main_reduce_height"
-                android:text="@string/reduce_description" />
-        </RelativeLayout>
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>
