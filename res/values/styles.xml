@@ -25,6 +25,13 @@
         <item name="android:layout_alignParentRight">true</item>
     </style>
    
+    <!-- Radiobutton -->
+    <style name="Radiobutton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>        
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+    
     <!-- LabelTextView -->
     <style name="LabelTextView">
         <item name="android:textSize">15sp</item>

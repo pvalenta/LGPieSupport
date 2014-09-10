@@ -1,14 +1,21 @@
 package hk.valenta.lgpiesupport;
 
 import android.content.res.XResources;
+import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Space;
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodHook.MethodHookParam;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources.InitPackageResourcesParam;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -20,8 +27,50 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 		XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
 		
 		if (pref.getBoolean("HideNavBar", true)) {
-			// disable navigation bar
-			XResources.setSystemWideReplacement("android", "bool", "config_showNavigationBar", false);
+			String hideNavBarMode = pref.getString("HideNavBarMode", "Disable");
+			if (hideNavBarMode.equals("Disable")) {
+				// disable navigation bar
+				XResources.setSystemWideReplacement("android", "bool", "config_showNavigationBar", false);
+			} else if (hideNavBarMode.equals("Zero")) {				
+				// set 0 height for layout
+				XResources.setSystemWideReplacement("android", "dimen", "navigation_bar_height", 0);
+				XResources.setSystemWideReplacement("android", "dimen", "navigation_bar_height_landscape", 0);
+				XResources.setSystemWideReplacement("android", "dimen", "navigation_bar_height_portrait", 0);
+				XResources.setSystemWideReplacement("android", "dimen", "navigation_bar_width", 0);
+				if (resparam.packageName.equals("com.android.systemui")) {
+					resparam.res.setReplacement("com.android.systemui", "dimen", "navigation_bar_size", 0);
+					resparam.res.hookLayout("com.android.systemui", "layout", "navigation_bar", new XC_LayoutInflated() {
+						@Override
+						public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+							// set 0 width and height
+							ViewGroup parent = (ViewGroup)liparam.view;
+							int childrenCount = parent.getChildCount();
+							for (int i=0; i<childrenCount; i++) {
+								// hide it
+								View child = parent.getChildAt(i);
+								child.setVisibility(View.GONE);
+								
+								// set width & height to 0
+								ViewGroup.LayoutParams params = child.getLayoutParams();
+								params.width = 0;
+								params.height = 0;
+							}
+							
+//							ViewGroup.LayoutParams params = liparam.view.getLayoutParams();
+//							params.width = 0;
+//							params.height = 0;
+						}
+					});
+					resparam.res.hookLayout("com.android.systemui", "layout", "status_bar_recent_panel", new XC_LayoutInflated() {
+						@Override
+						public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+							// set 0 height to space
+							Space recent_navi_space = (Space)liparam.view.findViewById(liparam.res.getIdentifier("recent_navi_space", "id", "com.android.systemui"));
+							recent_navi_space.setVisibility(View.GONE);
+						}
+					});
+				}
+			}
 		}
 	}
 
@@ -60,6 +109,42 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 						}
 					}
 				});
+				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "getNavigationBarLayoutParams", new XC_MethodHook() {
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						// get config
+						XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+						if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
+							WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams)param.getResult();
+							layoutParams.width = 0;
+							layoutParams.height = 0;
+							param.setResult(layoutParams);
+						}
+					}					
+				});
+				XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.NavigationBarView", lpparam.classLoader, "reorient", new XC_MethodHook() {
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						// get config
+						XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+						if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
+							View mCurrentView = (View)XposedHelpers.getObjectField(param.thisObject, "mCurrentView");
+							mCurrentView.setVisibility(View.GONE);
+						}
+					}
+				});
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+				if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
+					XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.PhoneStatusBar", lpparam.classLoader, "addNavigationBar", new XC_MethodReplacement() {					
+						@Override
+						protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+							// do nothing
+							XposedHelpers.setObjectField(param.thisObject, "mNavigationBarView", null);
+							XposedBridge.log("No Navigation Bar will be added");
+							return null;
+						}
+					});
+				}
 			} catch (Exception ex) {
 				// report it
 				XposedBridge.log(String.format("PieSupport - failed disable global access with touches with error: %s", ex.getMessage()));
@@ -81,6 +166,8 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				// set 1px less only to solve weather widget bug and keyboard bug
 				if (pref.getBoolean("ReduceWidth", true) && (fullWidth == 1920 || fullWidth == 2560)) {
 					param.setResult(fullWidth - 1);
+				} else if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
+					param.setResult(fullWidth);
 				}
 			}			
 		});
@@ -96,8 +183,36 @@ public class PieSupport implements IXposedHookInitPackageResources, IXposedHookL
 				// set 1px less only to solve weather widget bug and keyboard bug
 				if (pref.getBoolean("ReduceHeight", true) && (fullHeight == 1920 || fullHeight == 2560)) {
 					param.setResult(fullHeight - 1);
+				} else if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
+					param.setResult(fullHeight);
 				}
 			}			
+		});
+		XposedHelpers.findAndHookMethod("com.android.internal.policy.impl.PhoneWindowManager", null, "setInitialDisplaySize", Display.class, int.class, int.class, int.class, new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+				// get config
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.lgpiesupport", "config");
+				if (pref.getBoolean("HideNavBar", true) && pref.getString("HideNavBarMode", "Disable").equals("Zero")) {
+					// get array
+					int[] mNavigationBarWidthForRotation = (int[])XposedHelpers.getObjectField(param.thisObject, "mNavigationBarWidthForRotation");
+					
+					// set all to 0
+					mNavigationBarWidthForRotation[0] = 0;
+					mNavigationBarWidthForRotation[1] = 0;
+					mNavigationBarWidthForRotation[2] = 0;
+					mNavigationBarWidthForRotation[3] = 0;				
+					
+					// get array
+					int[] mNavigationBarHeightForRotation = (int[])XposedHelpers.getObjectField(param.thisObject, "mNavigationBarHeightForRotation");
+					
+					// set all to 0
+					mNavigationBarHeightForRotation[0] = 0;
+					mNavigationBarHeightForRotation[1] = 0;
+					mNavigationBarHeightForRotation[2] = 0;
+					mNavigationBarHeightForRotation[3] = 0;				
+				}				
+			}
 		});
 	}
 }

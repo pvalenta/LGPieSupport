@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.lgpiesupport"
-    android:versionCode="8"
-    android:versionName="1.3.0" >
+    android:versionCode="9"
+    android:versionName="1.4.0" >
 
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="20" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +24,7 @@
         </activity>        
         
         <meta-data android:name="xposedmodule" android:value="true" />
-        <meta-data android:name="xposedminversion" android:value="2.5*"/>
+        <meta-data android:name="xposedminversion" android:value="2.6*"/>
         <meta-data android:name="xposeddescription" android:value="Hide Navigation Bar, Disable Navigation Ring and Enable support for third party Pie control on LG KitKat ROM."/>
         
     </application>

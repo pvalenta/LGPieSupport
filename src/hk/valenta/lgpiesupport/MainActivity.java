@@ -7,13 +7,21 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	RelativeLayout hideNavBarModeGroup;
+	RadioButton disableNavRadio;
+	RadioButton zeroNavRadio;
+	boolean radioSwitch = false;
+	
 	@SuppressLint("WorldReadableFiles")
 	@SuppressWarnings("deprecation")
 	@Override
@@ -40,13 +48,48 @@ public class MainActivity extends Activity {
 		
 		// hide navbar
 		CheckBox navBar = (CheckBox)findViewById(R.id.main_hide_navbar);
-		navBar.setChecked(pref.getBoolean("HideNavBar", true));
+		boolean hideNavBar = pref.getBoolean("HideNavBar", true); 
+		navBar.setChecked(hideNavBar);
 		navBar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("HideNavBar", buttonView.isChecked()).commit();
+				boolean checked = buttonView.isChecked();
+				pref.edit().putBoolean("HideNavBar", checked).commit();
+				showHideNavMode(checked);
+			}
+		});
+		hideNavBarModeGroup = (RelativeLayout)findViewById(R.id.hide_navigation_bar_mode_group);
+		this.showHideNavMode(hideNavBar);		
+		
+		// hide mode
+		String hideNavBarMode = pref.getString("HideNavBarMode", "Disable");
+		disableNavRadio = (RadioButton)findViewById(R.id.main_hide_navbar_disable);
+		zeroNavRadio = (RadioButton)findViewById(R.id.main_hide_navbar_0way);
+		this.showHideNavMode(hideNavBarMode);
+		disableNavRadio.setOnCheckedChangeListener(new OnCheckedChangeListener() {			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				boolean checked = buttonView.isChecked();
+				if (checked) {
+					setHideNavMode("Disable");
+				} else {
+					setHideNavMode("Zero");
+				}
+			}
+		});
+		zeroNavRadio.setOnCheckedChangeListener(new OnCheckedChangeListener() {			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				boolean checked = buttonView.isChecked();
+				if (checked) {
+					setHideNavMode("Zero");
+				} else {
+					setHideNavMode("Disable");
+				}
 			}
 		});
 		
@@ -85,5 +128,41 @@ public class MainActivity extends Activity {
 				pref.edit().putBoolean("ReduceHeight", buttonView.isChecked()).commit();
 			}
 		});
+	}
+	
+	private void showHideNavMode(boolean show) {
+		if (show) {
+			hideNavBarModeGroup.setVisibility(View.VISIBLE);
+		} else {
+			hideNavBarModeGroup.setVisibility(View.GONE);
+		}		
+	}
+	
+	private void showHideNavMode(String mode) {
+		if (mode.equals("Zero")) {
+			disableNavRadio.setChecked(false);
+			zeroNavRadio.setChecked(true);
+		} else {
+			disableNavRadio.setChecked(true);
+			zeroNavRadio.setChecked(false);			
+		}
+	}
+	
+	@SuppressLint("WorldReadableFiles")
+	@SuppressWarnings("deprecation")
+	private void setHideNavMode(String mode) {
+		// made sure only one time called
+		if (radioSwitch) return;
+		
+		radioSwitch = true;
+		
+		// show it
+		showHideNavMode(mode);
+		
+		// set in config
+		SharedPreferences pref = getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+		pref.edit().putString("HideNavBarMode", mode).commit();
+		
+		radioSwitch = false;
 	}
 }

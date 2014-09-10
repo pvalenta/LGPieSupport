@@ -8,4 +8,6 @@
     <string name="reduce_width">Reduce width for portrait</string>
     <string name="reduce_height">Reduce height for landscape</string>
     <string name="reduce_description">This hook will reduce screen width &amp; height by 1px pretending thin navigation bar.</string>
+    <string name="hide_navbar_disable">Disable Navigation Bar by using global configuration</string>
+    <string name="hide_navbar_0way">Use 0 pixel width/height to hide Navigation Bar</string>
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="navbar_hide_mode">
+	    <item>Disable it</item>
+	    <item>Set 0 height</item>
+	</string-array>    
+</resources>
